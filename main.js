@@ -3,7 +3,35 @@
 
 const {app, BrowserWindow, Menu} = require('electron');
 const log = require('electron-log');
-const {autoUpdater} = require("electron-updater");
+const { NsisUpdater,MacUpdater,AppImageUpdater } = require("electron-updater");
+// Or MacUpdater, AppImageUpdater
+
+let updater; 
+const options = {
+    requestHeaders: {
+        // Any request headers to include here
+    },
+    provider: 'generic',
+    url: 'http://localhost:8080/auto-updates',
+    channel: "alpha"
+}
+const token = "toto";
+
+
+if (process.platform === 'win32') {
+  updater = new NsisUpdater(options);
+} else if (process.platform === 'darwin') {
+  updater = new MacUpdater(options);
+} else {
+  updater = new AppImageUpdater(options);
+}
+
+
+updater.addAuthHeader(`Bearer ${token}`)
+updater.checkForUpdatesAndNotify()
+    
+
+
 
 //-------------------------------------------------------------------
 // Logging
@@ -13,8 +41,8 @@ const {autoUpdater} = require("electron-updater");
 // This logging setup is not required for auto-updates to work,
 // but it sure makes debugging easier :)
 //-------------------------------------------------------------------
-autoUpdater.logger = log;
-autoUpdater.logger.transports.file.level = 'info';
+updater.logger = log;
+updater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
 //-------------------------------------------------------------------
@@ -72,26 +100,30 @@ function createDefaultWindow() {
   win.loadURL(`file://${__dirname}/version.html#v${app.getVersion()}`);
   return win;
 }
-autoUpdater.on('checking-for-update', () => {
+
+updater.on('checking-for-update', () => {
   sendStatusToWindow('Checking for update...');
 })
-autoUpdater.on('update-available', (info) => {
+updater.on('update-available', (info) => {
   sendStatusToWindow('Update available.');
+  sendStatusToWindow(JSON.stringify(info));
 })
-autoUpdater.on('update-not-available', (info) => {
+updater.on('update-not-available', (info) => {
   sendStatusToWindow('Update not available.');
+  sendStatusToWindow(JSON.stringify(info));
 })
-autoUpdater.on('error', (err) => {
+updater.on('error', (err) => {
   sendStatusToWindow('Error in auto-updater. ' + err);
 })
-autoUpdater.on('download-progress', (progressObj) => {
+updater.on('download-progress', (progressObj) => {
   let log_message = "Download speed: " + progressObj.bytesPerSecond;
   log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
   log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
   sendStatusToWindow(log_message);
 })
-autoUpdater.on('update-downloaded', (info) => {
+updater.on('update-downloaded', (info) => {
   sendStatusToWindow('Update downloaded');
+  sendStatusToWindow(JSON.stringify(info));
 });
 app.on('ready', function() {
   // Create the Menu
@@ -115,7 +147,7 @@ app.on('window-all-closed', () => {
 // app quits.
 //-------------------------------------------------------------------
 app.on('ready', function()  {
-  autoUpdater.checkForUpdatesAndNotify();
+  updater.checkForUpdatesAndNotify();
 });
 
 //-------------------------------------------------------------------

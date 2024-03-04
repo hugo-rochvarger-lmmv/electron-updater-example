@@ -1,6 +1,6 @@
 {
   "name": "electron-updater-example",
-  "version": "0.8.2",
+  "version": "0.8.7",
   "main": "main.js",
   "description": "electron-updater example project",
   "author": "Matt Haggard",
@@ -19,9 +19,10 @@
   "build": {
     "appId": "com.github.hugo-rochvarger-lmmv.electronupdaterexample",
     "publish": [{
-      "provider": "github",
-      "owner": "hugo-rochvarger-lmmv",
-      "repo": "electron-updater-example"
+      "provider": "generic",
+      "url": "http://localhost:8080/myapplicationname/test/${os}",
+      "publishAutoUpdate": true,
+      "channel":"latest"
   }],
     "afterSign": "./build/notarize.js",
     "mac": {
