@@ -12,7 +12,7 @@ const options = {
         // Any request headers to include here
     },
     provider: 'generic',
-    url: 'http://localhost:8080/auto-updates',
+    url: 'http://localhost:3000/release',
     channel: "alpha"
 }
 const token = "toto";

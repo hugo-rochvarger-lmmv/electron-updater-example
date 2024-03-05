@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# Requires jq and mc
+# jq: brew install jq
+# mc: brew install minio/stable/mc
+
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <version>"
+    exit 1
+fi
+
+env_file=".env"
+
+# Check if the .env file exists
+if [ -f "$env_file" ]; then
+    # Source the .env file to load environment variables
+    source "$env_file"
+    echo "Loaded environment variables from $env_file"
+
+    # Access environment variables
+    echo "The value of MY_VARIABLE is: $MY_VARIABLE"
+else
+    echo "Error: The .env file ($env_file) not found."
+    exit 1
+fi
+
+version="$1"
+dmg_file="dist/electron-updater-example-${version}-arm64.dmg"
+signed_zip_file="dist/electron-updater-example-${version}-arm64-mac.zip"
+minio_endpoint="http://localhost:$MINIO_PORT"
+minio_bucket_name="$MINIO_BUCKET"
+
+release_date=$(date -u +"%Y-%m-%dT%H:%M:%S.%NZ")
+release_note="hi this is a note"
+
+# Sign the DMG file
+codesign --deep --force --verbose --sign - "${dmg_file}"
+
+# Check if codesign was successful
+if [ $? -eq 0 ]; then
+    # Zip the signed DMG file
+    zip -r "${signed_zip_file}" "${dmg_file}"
+    echo "Signing and zipping completed successfully."
+
+    # Display SHA512 hash of the ZIP file
+    sha512_hash=$(openssl dgst -sha512 -binary ${signed_zip_file} | base64)
+    echo "SHA512: ${sha512_hash}"
+
+    # Display file size of the ZIP file
+    file_size=$(stat -f%z "${signed_zip_file}")
+    echo "size: ${file_size} bytes"
+
+    # Upload the ZIP file to MinIO (replace with your MinIO details)
+    mc config host add minio ${minio_endpoint}
+    mc cp "${signed_zip_file}" minio/${minio_bucket_name}/
+
+    minio_url="${minio_endpoint}/${minio_bucket_name}/${signed_zip_file#dist/}"
+    echo "url(MinIO): ${minio_url}"
+
+    # JSON Output
+    json_output=$(cat <<EOF
+{
+    "version": "${version}",
+    "files": [
+        {
+            "url": "${minio_url}",
+            "sha512": "${sha512_hash}",
+            "size": ${file_size}
+        }
+    ],
+    "path": "${minio_url}",
+    "sha512": "${sha512_hash}",
+    "releaseDate": "${release_date}",
+    "releaseNote": "${release_note}",
+    "required": true
+}
+EOF
+)
+    echo "Generated JSON:"
+    echo "${json_output}" | jq '.'
+else
+    echo "Error: Codesigning failed."
+    exit 1
+fi
