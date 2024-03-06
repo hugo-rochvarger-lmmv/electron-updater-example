@@ -1,13 +1,14 @@
 {
   "name": "electron-updater-example",
-  "version": "1.0.0",
+  "version": "1.1.9",
   "main": "main.js",
   "description": "electron-updater example project",
   "author": "Matt Haggard",
   "scripts": {
-    "build": "electron-builder --mac -p never",
+    "build": "yarn next electron-builder --mac -p never",
     "ars": "yarn --cwd ars start",
-    "mac-push": "script/dev-mac.sh "
+    "mac-push": "script/dev-mac.sh ",
+    "next": "yarn version --no-git-tag-version --patch"
   },
   "devDependencies": {
     "electron": "^29.1.0",
@@ -27,7 +28,12 @@
     ],
     "appId": "com.github.hugo-rochvarger-lmmv.poc",
     "afterSign": "./build/notarize.js",
-    "files": ["**/*","!**/.minio","!**/ars","!**/dist"],
+    "files": [
+      "**/*",
+      "!**/.minio",
+      "!**/ars",
+      "!**/dist"
+    ],
     "mac": {
       "category": "your.app.category.type"
     },
