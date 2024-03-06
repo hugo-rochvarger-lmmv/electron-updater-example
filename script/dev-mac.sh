@@ -35,8 +35,6 @@ codesign -vvv --deep --strict "${dmg_file}"
 # Fake Sign the DMG file
 # codesign --deep --force --verbose --sign - "${dmg_file}"
 
-
-# Check if codesign was successful
 if [ $? -eq 0 ]; then
     # Zip the signed DMG file
     zip -r "${signed_zip_file}" "${dmg_file}"
