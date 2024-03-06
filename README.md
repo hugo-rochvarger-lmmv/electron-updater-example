@@ -5,20 +5,24 @@
 docker compose up -d
 
 # create release (we are not notarizing)
-yarn && yarn run build
+npm && npm run build
 
 # Run the installer .dmg in /dist (macos)
 
 # Increment version in package.json
 
 # Create new release
-yarn run build
+npm run build
 
-# Hackish sign and zip + upload mac version to minio bucket
+# Hackish sign and zip + upload mac version to minio bucket - if first time you might need to install tools like jq and mc
+brew install jq
+brew install minio/stable/mc
 ./script/dev-mac.sh <versionNumber>
 
-# Run release Server
-cd releaseserver && yarn && yarn start
+# Copy/paste the Generated JSON into releaseserver/main.js
+
+# Run release Server and play around - if first time you need to install packages first
+yarn --cwd ars start
 
 # Start the app "electron-updater-example'
 # Expect Results: The autoUpdate will find the new version, download it and install. No errors

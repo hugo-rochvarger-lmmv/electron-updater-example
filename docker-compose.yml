@@ -5,6 +5,7 @@ services:
     image: docker.io/bitnami/minio:2022
     ports:
       - '${MINIO_PORT}:9000'
+      - "9001:9001"
     volumes:
       - './.minio:/data'
     environment:
