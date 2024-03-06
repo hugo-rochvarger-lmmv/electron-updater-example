@@ -1,6 +1,8 @@
 # Quick Start
 
 forked repo: https://github.com/iffy/electron-updater-example
+
+WTF apple identity certificate?: https://github.com/electron-userland/electron-builder/issues/2513#issuecomment-1278343940
 ```sh
 
  export CSC_IDENTITY_AUTO_DISCOVERY="true"

@@ -1,11 +1,13 @@
 {
   "name": "electron-updater-example",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "main.js",
   "description": "electron-updater example project",
   "author": "Matt Haggard",
   "scripts": {
-    "build": "electron-builder --mac --win -p always"
+    "build": "electron-builder --mac -p never",
+    "ars": "yarn --cwd ars start",
+    "mac-push": "script/dev-mac.sh "
   },
   "devDependencies": {
     "electron": "^29.1.0",
@@ -17,16 +19,17 @@
     "electron-updater": "^6.1.8"
   },
   "build": {
-    "appId": "com.hugo-rochvarger-lmmv.electron-updater-example",
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://localhost:3000/releases?test=tutu"
+      }
+    ],
+    "appId": "com.github.hugo-rochvarger-lmmv.poc",
     "afterSign": "./build/notarize.js",
     "files": ["**/*","!**/.minio","!**/ars","!**/dist"],
     "mac": {
-      "category": "your.app.category.type",
-      "gatekeeperAssess": false,
-      "hardenedRuntime": true,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist",
-      "target": ["dmg"]
+      "category": "your.app.category.type"
     },
     "win": {
       "target": "nsis"

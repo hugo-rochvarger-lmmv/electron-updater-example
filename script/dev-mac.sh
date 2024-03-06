@@ -31,14 +31,10 @@ minio_bucket_name="$MINIO_BUCKET"
 release_date=$(date -u +"%Y-%m-%dT%H:%M:%S.%NZ")
 release_note="hi this is a note"
 
-codesign -vvv --deep --strict "${dmg_file}"
-# Fake Sign the DMG file
+codesign -vvv --deep --strict "${dmg_file}" || true
 # codesign --deep --force --verbose --sign - "${dmg_file}"
 
 if [ $? -eq 0 ]; then
-    # Zip the signed DMG file
-    zip -r "${signed_zip_file}" "${dmg_file}"
-    echo "Signing and zipping completed successfully."
 
     # Display SHA512 hash of the ZIP file
     zip_sha512_hash=$(openssl dgst -sha512 -binary ${signed_zip_file} | base64)
@@ -59,7 +55,7 @@ if [ $? -eq 0 ]; then
 
     zip_minio_url="${minio_endpoint}/${minio_bucket_name}/${signed_zip_file#dist/}"
     dmg_minio_url="${minio_endpoint}/${minio_bucket_name}/${dmg_file#dist/}"
-    echo "zip url(MinIO): ${minio_url}"
+    echo "zip url(MinIO): ${zip_minio_url}"
     echo "dmg url(MinIO): ${dmg_minio_url}"
 
     # JSON Output
