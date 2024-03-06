@@ -34,6 +34,10 @@ release_note="hi this is a note"
 codesign -vvv --deep --strict "${dmg_file}" || true
 # codesign --deep --force --verbose --sign - "${dmg_file}"
 
+# unzip ${signed_zip_file} -d dist
+# codesign --deep --force --verbose --sign - "electron-updater-example.app"
+# zip -r ${signed_zip_file} electron-updater-example.app
+
 if [ $? -eq 0 ]; then
 
     # Display SHA512 hash of the ZIP file

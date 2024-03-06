@@ -9,6 +9,6 @@ services:
     volumes:
       - './.minio:/data'
     environment:
-      - MINIO_ROOT_USER=your_username
-      - MINIO_ROOT_PASSWORD=your_pasword
+      - MINIO_ROOT_USER=user
+      - MINIO_ROOT_PASSWORD=pass
       - MINIO_DEFAULT_BUCKETS=${MINIO_BUCKET}:public
