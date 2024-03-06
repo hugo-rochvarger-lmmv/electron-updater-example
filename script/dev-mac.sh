@@ -32,8 +32,8 @@ release_date=$(date -u +"%Y-%m-%dT%H:%M:%S.%NZ")
 release_note="hi this is a note"
 
 codesign -vvv --deep --strict "${dmg_file}"
-# Sign the DMG file
-codesign --deep --force --verbose --sign - "${dmg_file}"
+# Fake Sign the DMG file
+# codesign --deep --force --verbose --sign - "${dmg_file}"
 
 
 # Check if codesign was successful

@@ -12,7 +12,7 @@ const options = {
         // Any request headers to include here
     },
     provider: 'generic',
-    url: 'http://localhost:3000/release',
+    url: 'http://localhost:3000/release?test=tototutu',
     channel: "alpha"
 }
 const token = "toto";

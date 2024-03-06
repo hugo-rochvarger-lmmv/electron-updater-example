@@ -10,7 +10,7 @@ app.use((req, res, next) => {
 
 app.get('/download/*', (req, res) => {
 
-  const redirectTo = req.query.redirectTo;;
+  const redirectTo = req.query.redirectTo;
 
   console.log(`Redirecting to: ${redirectTo}`);
   res.redirect(302, 'http://localhost:9000/release/electron-updater-example-1.0.1-arm64-mac.zip');

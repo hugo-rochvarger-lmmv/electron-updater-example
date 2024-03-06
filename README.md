@@ -1,6 +1,13 @@
 # Quick Start
 
+forked repo: https://github.com/iffy/electron-updater-example
 ```sh
+
+ export CSC_IDENTITY_AUTO_DISCOVERY="true"
+ export APPLE_ID="<your Apple ID>"
+ export APPLE_ID_PASSWORD="<your Apple Password>"
+
+ 
 # start minIo (hosting release file locally)
 docker compose up -d
 
